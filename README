@@ -36,7 +36,7 @@ DESCRIPTION
 
         perl -Minc=lib:core …
 
-  Smart Objects
+SMART OBJECTS
     This is a list of the smart objects that are predefined by the "inc"
     module:
 
@@ -56,6 +56,9 @@ DESCRIPTION
 
     "dist"
         Parse a Dist::Zilla "dist.ini" file for prereqs.
+
+    "perl5lib"
+        Expands to the paths in the PERL5LIB environment variable.
 
     "lib"
         Expands to an absolute path of "./lib".
@@ -87,6 +90,10 @@ DESCRIPTION
     "none"
         Use this to set @INC to the empty list. The "use inc …" statement
         requires at least one object, so this is needed to make it empty.
+
+    "list"
+        This is for debugging. Prints the @INC values that have been
+        assembled so far.
 
     Directory Paths
         Any list value containing a '/' in the name, is a real filesystem
