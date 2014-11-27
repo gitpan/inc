@@ -1,13 +1,27 @@
---- #YAML:1.0
-name:                inc
-version:             0.01
-abstract:            Add Named Resources to @INC
-license:             perl
-generated_by:        ExtUtils::MakeMaker version 6.32
-distribution_type:   module
-requires:     
-meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
-    version: 1.2
+---
+abstract: 'Smart @INC Processing'
 author:
-    - Ingy döt Net <ingy@cpan.org>
+  - 'Ingy döt Net <ingy@cpan.org>'
+build_requires: {}
+configure_requires:
+  ExtUtils::MakeMaker: '6.30'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 5.019, CPAN::Meta::Converter version 2.132830'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: inc
+no_index:
+  directory:
+    - inc
+    - t
+    - xt
+    - example
+requires:
+  perl: v5.8.1
+resources:
+  bugtracker: https://github.com/ingydotnet/inc-pm/issues
+  homepage: https://github.com/ingydotnet/inc-pm
+  repository: https://github.com/ingydotnet/inc-pm.git
+version: '0.02'

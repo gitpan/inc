@@ -1,57 +1,139 @@
 package inc;
-use 5.005003;
-use strict;
-use File::Spec;
-$inc::VERSION = '0.01';
+our $VERSION = '0.02';
 
-sub import {
-    my $class = shift;
-    my $name = shift;
-    return unless $name;
-    my $base;
-    if ($base = $ENV{PERL_INC_BASE}) {
-        use_lib(File::Spec->catfile($base, $name));
-    }
+use Cwd();
+use Config();
+
+my $plugins = {};
+my $inc;
+BEGIN {
+    $inc ||= [@INC];
 }
 
-sub use_lib {
-    my $base = File::Spec->canonpath(shift);
-    eval "use lib '$base'; 1" or die $@;
+sub import {
+    my ($class) = shift;
+    return unless @_;
+    my $self = bless {}, $class;
+    @INC = $self->create_list(@_);
+    return;
+}
+
+sub list {
+    my ($class) = shift;
+    die "'inc->list' requires at least one argument"
+        unless @_;
+    my $self = bless {}, $class;
+    return $self->create_list(@_);
+}
+
+sub create_list {
+    my ($self) = shift;
+    $self->{spec} = [@_];
+    my $list = $self->{list} = [];
+    while (my $next = $self->parse_spec(@_)) {
+        my ($name, @args) = @$next;
+        if ($name =~ m!/!) {
+            push @$list, $name;
+        }
+        else {
+            my $method = "inc_$name";
+            die "No inc support found for '$name'"
+                unless $self->can($method);
+            push @$list, $self->$method(@args);
+        }
+    }
+    return @$list;
+}
+
+sub parse_spec {
+    my ($self) = @_;
+    my $next = $self->get_next_spec or return;
+    die "Invalid spec string '$next'"
+      unless $next =~ /^(\-?)(\w+)(?:=(.*))?$/;
+    my $name = $2;
+    $name = "not_$name" if $1;
+    my @args = $3 ? split /,/, $3 : ();
+    return [$name, @args];
+}
+
+sub get_next_spec {
+    my ($self) = @_;
+    while (@{$self->{spec}}) {
+        my $next = shift @{$self->{spec}};
+        next unless length $next;
+        if ($next =~ /:/) {
+            # XXX This parse is flimsy:
+            my @rest;
+            ($next, @rest) = split /:/, $next;
+            unshift @{$self->{spec}}, @rest;
+            next unless $next;
+        }
+        return $next;
+    }
+    return;
+}
+
+#------------------------------------------------------------------------------
+# Smart Objects
+#------------------------------------------------------------------------------
+sub inc_core {
+    my ($self, $version) = @_;
+    die "inc 'core' object not yet implemented";
+}
+
+sub inc_deps {
+    my ($self, @module) = @_;
+    die "inc 'deps' object not yet implemented";
+}
+
+sub inc_meta {
+    my ($self) = @_;
+    die "inc 'meta' object not yet implemented";
+}
+
+sub inc_dist {
+    my ($self) = @_;
+    die "inc 'dist' object not yet implemented";
+}
+
+sub inc_lib {
+    return Cwd::cwd . '/lib';
+}
+
+sub inc_blib {
+    return 'blib/lib', 'blib/arch';
+}
+
+sub inc_inc {
+    return @{$self->{inc}};
+}
+
+sub inc_INC {
+    return @$inc;
+}
+
+sub inc_priv {
+    die "inc 'priv' object not yet implemented";
+}
+
+sub inc_not_priv {
+    die "inc '-priv' object not yet implemented";
+}
+
+sub inc_site {
+    die "inc 'site' object not yet implemented";
+}
+
+sub inc_not_site {
+    die "inc '-site' object not yet implemented";
+}
+
+sub inc_not {
+    die "inc 'not' object not yet implemented";
+}
+
+sub inc_none {
+    return ();
 }
 
 1;
-
-=head1 NAME
-
-inc - Add Named Resources to @INC
-
-=head1 SYNOPSIS
-
-    use inc 'Plagger';   # Make sure @INC uses the Plagger deps install tree
-
-=head1 DESCRIPTION
-
-C<inc> is a module to add named Perl module install paths to @INC, in a
-concise, generic and portable way.
-
-It is meant for projects that take advantage of external dependency
-trees like those provided by PMIR.
-
-=head1 NOTE
-
-This module is in its infancy. Please don't use it yet.
-
-=head1 AUTHOR
-
-Ingy döt Net <ingy@cpan.org>
-
-=head1 COPYRIGHT
-
-Copyright (c) 2007. Ingy döt Net. All rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-See L<http://www.perl.com/perl/misc/Artistic.html>
-
-=cut
