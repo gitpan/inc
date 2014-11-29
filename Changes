@@ -1,3 +1,7 @@
+0.04 Fri Nov 28 18:19:24 PST 2014
+ - Implement more objects
+ - Write more tests
+
 0.03 Thu Nov 27 01:05:51 PST 2014
  - Implement the 'core' object
  - Implement 'list' object

@@ -10,5 +10,6 @@ README
 lib/inc.pm
 lib/inc.pod
 t/000-compile-modules.t
-t/list.t
+t/objects.t
 t/release-pod-syntax.t
+t/usages.t

@@ -38,62 +38,83 @@ DESCRIPTION
 
 SMART OBJECTS
     This is a list of the smart objects that are predefined by the "inc"
-    module:
+    module (in alpha order):
+
+    "blib"
+        Use the path values that "blib.pm" would add.
+
+    "cache"
+        Some of the smart objects can take long time to get their
+        information. They might need to fetch information from the internet,
+        for example. This object will save all the state into a file called
+        "./.perl-inc-cache". You can override this filename by passing a
+        value of your own as an argument.
+
+        If the cache file exists it will be used. If not, values will be
+        stored to it. To refresh the cache, simply delete the file.
 
     "core"
         Only finds the modules that are in core for the version of Perl that
         is running. You can give this a Perl version argument, and modules
         will be limited to the ones that were core for that version.
 
+    "cwd"
+        Adds the absolute path of the current directory.
+
     "deps"
         Only finds modules that are known prereqs of a module. Defaults to
         the module from which it was called. You can pass in the names of
         one or more modules to use.
 
-    "meta"
-        Only find modules listed as prereqs in "META.json" or "META.yaml".
-        Also finds modules that are prereqs of those modules.
+    "dot"
+        Adds "File::Spec->curdir". (Usually ".").
 
-    "dist"
-        Parse a Dist::Zilla "dist.ini" file for prereqs.
-
-    "perl5lib"
-        Expands to the paths in the PERL5LIB environment variable.
-
-    "lib"
-        Expands to an absolute path of "./lib".
-
-    "blib"
-        Use the path values that "blib.pm" would add.
+    "dzil"
+        Use Dist::Zilla's "dzil listdeps" to find prereqs. Only find these
+        modules.
 
     "inc"
         Expands to the value on @INC prior to the execution of "use inc …".
 
     "INC"
-        Expands to the systems default @INC.
+        Expands to the perl's default @INC.
 
-    "priv"
-        Adds "privlib" and "archlib" paths from the Config module.
+    "lib"
+        Expands to an absolute path of "./lib".
 
-    "!priv"
-        Removes "privlib" and "archlib" paths from the Config module.
-
-    "site"
-        Adds "sitelib" and "sitearch" paths from the Config module.
-
-    "!site"
-        Removes "sitelib" and "sitearch" paths from the Config module.
-
-    "not=<regex-list>"
-        Removes paths matching one or more regexes.
+    "meta"
+        Only find modules listed as prereqs in "META.json" or "META.yaml".
+        Also finds modules that are prereqs of those modules.
 
     "none"
         Use this to set @INC to the empty list. The "use inc …" statement
         requires at least one object, so this is needed to make it empty.
 
-    "list"
+    "not=<regex>"
+        Removes paths that match the regex.
+
+    "perl5lib"
+        Expands to the paths in the PERL5LIB environment variable.
+
+    "priv"
+        Adds "privlib" and "archlib" paths from the Config module.
+
+    "-priv"
+        Removes "privlib" and "archlib" paths from the Config module.
+
+    "show"
         This is for debugging. Prints the @INC values that have been
         assembled so far.
+
+    "site"
+        Adds "sitelib" and "sitearch" paths from the Config module.
+
+    "-site"
+        Removes "sitelib" and "sitearch" paths from the Config module.
+
+    "zild"
+        Use Zilla::Dist's "zild listdeps" to find prereqs. Only find these
+        modules.
 
     Directory Paths
         Any list value containing a '/' in the name, is a real filesystem
@@ -101,7 +122,7 @@ SMART OBJECTS
 
             use inc 'foo', @INC, 'bar';
 
-    "::Foo"
+    "::Foo" (Plugins)
         Use the "inc::Plugin::Foo" module to look for smart objects. Objects
         will be searched in plugins first, then "inc.pm".
 
