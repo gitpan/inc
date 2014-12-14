@@ -79,6 +79,9 @@ SMART OBJECTS
     "INC"
         Expands to the perl's default @INC.
 
+    "LC"
+        Lancaster Core. Alias for "core=5.8.1"
+
     "lib"
         Expands to an absolute path of "./lib".
 
@@ -92,6 +95,10 @@ SMART OBJECTS
 
     "not=<regex>"
         Removes paths that match the regex.
+
+    "ok=<regex>"
+        If the name of the module being loaded matches the regex, it will be
+        loaded from the original @INC.
 
     "perl5lib"
         Expands to the paths in the PERL5LIB environment variable.
